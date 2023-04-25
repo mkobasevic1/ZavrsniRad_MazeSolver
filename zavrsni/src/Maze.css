@@ -12,13 +12,54 @@
 .cell {
 	width: 50px;
 	height: 50px;
-	border: 2px solid #222;
+	border-bottom: 2px solid #222;
+	border-right: 2px solid #222;
 	background-color: #fff;
+	border-top: 2px white;
+	border-left: 2px white;
 }
 
 .visited {
 	width: 50px;
 	height: 50px;
-	border: 2px solid #222;
+	border-bottom: 2px solid #222;
+	border-right: 2px solid #222;
 	background-color: rgb(204, 204, 204);
+	border-top: 2px white;
+	border-left: 2px white;
+}
+
+.top {
+	width: 50px;
+	height: 50px;
+	border-bottom: 2px solid #222;
+	border-right: 2px solid #222;
+	border-top: 2px solid #222;
+}
+
+.left {
+	width: 50px;
+	height: 50px;
+	border-bottom: 2px solid #222;
+	border-right: 2px solid #222;
+	border-left: 2px solid #222;
+}
+
+.start {
+	background-color: rgb(220, 235, 86);
+}
+
+.end {
+	background-color: rgb(86, 235, 131);
+}
+
+.generateBtn {
+	height: 40px;
+	width: 130px;
+	padding: 5px;
+	border-radius: 200px;
+	background-color: rgb(80, 167, 238);
+	color: white;
+	border: 0px;
+	margin: 20px;
 }

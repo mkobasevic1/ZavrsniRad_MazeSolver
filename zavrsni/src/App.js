@@ -2,7 +2,15 @@ import React, { useState } from 'react';
 import './Maze.css';
 
 function Cell(props) {
-	return <div id={`${props.row},${props.column}`} className={`cell ${props.visited ? 'visited' : ''}`}></div>;
+	return (
+		<div
+			id={`${props.row},${props.column}`}
+			className={`cell ${props.visited ? 'visited' : ''} ${props.row === 0 ? 'top' : ''} ${
+				props.column === 0 ? 'left' : ''
+			} ${props.column === 0 && props.row === 0 ? 'start' : ''} ${
+				props.row === props.endRow && props.column === props.endCol ? 'end' : ''
+			}`}></div>
+	);
 }
 
 function Maze() {
@@ -74,15 +82,16 @@ function Maze() {
 
 	return (
 		<div className='maze'>
-			<button onClick={generateMaze}>Generate Maze</button>
+			<button className='generateBtn' onClick={generateMaze}>
+				Generate Maze
+			</button>
 			{maze.map((row, i) => (
 				<div className='row' key={i}>
 					{row.map((cell, j) => (
-						<Cell key={i - j} row={i} column={j} visited={visited[i][j]} />
+						<Cell key={i - j} row={i} column={j} visited={visited[i][j]} endRow={endRow} endCol={endCol} />
 					))}
 				</div>
 			))}
-			{console.log('row col end ', endRow, endCol)}
 		</div>
 	);
 }
