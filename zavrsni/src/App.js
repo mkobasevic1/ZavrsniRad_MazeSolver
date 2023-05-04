@@ -32,6 +32,7 @@ function Maze() {
 	const generateMaze = () => {
 		setGenerated(true);
 		setVisited2([[false,false,false,false],[false,false,false,false],[false,false,false,false],[false,false,false,false]]);
+		setPath([[false,false,false,false],[false,false,false,false],[false,false,false,false],[false,false,false,false]]);
 		if (maze.length === 0) {
 			for (let i = 0; i < 4; i++) {
 				const row = [];
@@ -201,6 +202,7 @@ function Maze() {
 		await new Promise(resolve => setTimeout(resolve, 500));
 		if(row===startRow && col===startCol){
 			setIsDisabled(false);
+			
 			return;
 		}
 			if (row > 0 && visited2[row - 1][col] && maze[row][col].top==false && !path[row-1][col]) {		
