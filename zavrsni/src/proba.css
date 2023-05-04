@@ -1,0 +1,38 @@
+.app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 100px;
+}
+
+table {
+    border-collapse: collapse;
+
+}
+
+tr {
+    justify-content: center;
+    align-items: center;
+}
+
+td {
+    border: 1px solid black;
+    height: 50px;
+    width: 50px;
+}
+
+td.noright {
+    border-right: 0px;
+}
+
+td.noleft {
+    border-left: 0px;
+}
+
+td.notop {
+    border-top: 0px;
+}
+
+td.nobottom {
+    border-bottom: 0px;
+}

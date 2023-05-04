@@ -27,6 +27,11 @@
 	margin-top: 100px;
 }
 
+table {
+	border-collapse: collapse;
+
+}
+
 .row {
 	display: flex;
 }
@@ -41,15 +46,7 @@
 	border-left: 2px white;
 }
 
-.visited {
-	width: 50px;
-	height: 50px;
-	border-bottom: 2px solid #222;
-	border-right: 2px solid #222;
-	background-color: rgb(204, 204, 204);
-	border-top: 2px white;
-	border-left: 2px white;
-}
+
 
 .top {
 	width: 50px;
@@ -75,8 +72,13 @@
 	background-color: rgb(86, 235, 131);
 }
 
-.search{
+.search {
 	background-color: rgb(74, 185, 204);
+}
+
+.path{
+	background: rgb(74, 185, 204) url('../public/footsteps-silhouette-variant.png') no-repeat center center;
+  	background-size: 70%; /* Optional, adjusts the size of the background image */
 }
 
 .generateBtn {
@@ -131,4 +133,26 @@
 
 .solve:active {
 	box-shadow: 2px 8px 10px -6px hsla(0, 0%, 0%, 0.5);
+}
+
+td {
+	border: 1px solid black;
+	height: 50px;
+	width: 50px;
+}
+
+td.noright {
+	border-right: 0px;
+}
+
+td.noleft {
+	border-left: 0px;
+}
+
+td.notop {
+	border-top: 0px;
+}
+
+td.nobottom {
+	border-bottom: 0px;
 }
