@@ -27,9 +27,11 @@ function Maze() {
 	const [path,setPath]= useState([[false,false,false,false],[false,false,false,false],[false,false,false,false],[false,false,false,false]]);
 	var [finished,setFinished]= useState(false);
 	const [isDisabled,setIsDisabled] = useState(false);
+	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
 	// Create a new maze grid
 	const generateMaze = () => {
+		setIsButtonDisabled(false);
 		setGenerated(true);
 		setVisited2([[false,false,false,false],[false,false,false,false],[false,false,false,false],[false,false,false,false]]);
 		setPath([[false,false,false,false],[false,false,false,false],[false,false,false,false],[false,false,false,false]]);
@@ -94,30 +96,6 @@ function Maze() {
 				setEndCol(end.column);
 				return;
 			}
-			/*if () {
-				var next = maze[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)];
-				console.log("next ",next.row,next.column);
-				visited[next.row][next.column] = true;
-				maze[next.row][next.column].visited = true;
-				if(next.row>0 && maze[next.row-1][next.column].visited==true){
-					maze[next.row][next.column].top=false;
-					maze[next.row-1][next.column].bottom=false;
-				}
-				if(next.row<3 && maze[next.row+1][next.column].visited==true){
-					maze[next.row][next.column].bottom=false;
-					maze[next.row+1][next.column].top=false;
-				}
-				if(next.column>0 && maze[next.row][next.column-1].visited==true){
-					maze[next.row][next.column].right=false;
-					maze[next.row][next.column-1].left=false;
-				}
-				if(next.column<3 && maze[next.row][next.column+1].visited==true){
-					maze[next.row][next.column].left=false;
-					maze[next.row][next.column+1].right=false;
-				}
-				setVisited([...visited]);
-				dfs(next.row, next.column);
-			}*/
 
 			const [nextRow, nextCol] = neighbors[Math.floor(Math.random() * neighbors.length)];
 			visited[nextRow][nextCol] = true;
@@ -150,8 +128,59 @@ function Maze() {
 		dfs(startRow, startCol);
 	};
 
-	const solveBFS = () => {};
+	const solveBFS = async () => {
+		setIsButtonDisabled(true);
+		setIsDisabled(true);
+		var stack = [];
+		setVisited2([[false,false,false,false],[false,false,false,false],[false,false,false,false],[false,false,false,false]]);
+		visited2[startRow][startCol]=true;
+		setVisited2([...visited2]);				
+		setMaze([...maze]);
+		await new Promise(resolve => setTimeout(resolve, 1000));
+		if (startRow > 0 && !visited2[startRow - 1][startCol] && visited[startRow-1][startCol] && maze[startRow][startCol].top==false) {		
+			stack.push([startRow - 1, startCol]);
+		}
+		if (startCol > 0 && !visited2[startRow][startCol - 1] && visited[startRow][startCol-1] && maze[startRow][startCol].left==false) {
+			stack.push([startRow, startCol - 1]);
+		}
+		if (startRow < 3 && !visited2[startRow + 1][startCol] && visited[startRow+1][startCol] && maze[startRow][startCol].bottom==false) {
+			stack.push([startRow + 1, startCol]);
+		}
+		if (col < 3 && !visited2[row][col + 1] && visited[row][col+1] && maze[row][col].right==false) {
+			stack.push([startRow, startCol + 1]);
+		}
+
+		while(stack.length!=0){
+			var [row,col] = stack[0];
+			visited2[row][col]=true;
+			setVisited2([...visited2]);				
+			setMaze([...maze]);
+			await new Promise(resolve => setTimeout(resolve, 1000));
+			if(row===endRow && col===endCol){
+				setPath([[false,false,false,false],[false,false,false,false],[false,false,false,false],[false,false,false,false]]);
+				definePath(endRow,endCol);
+				
+				return;
+			}
+			if (row > 0 && !visited2[row - 1][col] && visited[row-1][col] && maze[row][col].top==false) {		
+			stack.push([row - 1, col]);
+			}
+			if (col > 0 && !visited2[row][col - 1] && visited[row][col-1] && maze[row][col].left==false) {
+				stack.push([row, col - 1]);
+			}
+			if (row < 3 && !visited2[row + 1][col] && visited[row+1][col] && maze[row][col].bottom==false) {
+				stack.push([row + 1, col]);
+			}
+			if (col < 3 && !visited2[row][col + 1] && visited[row][col+1] && maze[row][col].right==false) {
+				stack.push([row, col + 1]);
+			}
+			stack=stack.slice(1,stack.length);
+			console.log("row col stek",row,col,stack);
+		}
+		
+	};
 	const solveDFS = async (row,col) =>{
+		setIsButtonDisabled(true);
 		setIsDisabled(true);
 		if(finished) return;
 		const stack = [];		
@@ -175,12 +204,12 @@ function Maze() {
 			setVisited2([...visited2]);				
 			setMaze([...maze]);
 			await new Promise(resolve => setTimeout(resolve, 1000));
-			if(row===endRow && col===endCol) 
-				{
+			if(row===endRow && col===endCol) {
 					finished=true;
 					setFinished(true);
+					setPath([[false,false,false,false],[false,false,false,false],[false,false,false,false],[false,false,false,false]]);
 					definePath(endRow,endCol);
-				}
+			}
 			return;
 		}
 		
@@ -264,8 +293,8 @@ function Maze() {
 				</table>
 				{generated ? (
 					<div className='buttons'>
-						<button disabled={isDisabled} className='solve' onClick={event => solveDFS(startRow,startCol)}>Solve DFS</button>
-						<button disabled={isDisabled} className='solve' onclick={solveBFS}>Solve BFS</button>
+						<button disabled={isDisabled || isButtonDisabled} className='solve' onClick={event => solveDFS(startRow,startCol)}>Solve DFS</button>
+						<button disabled={isDisabled || isButtonDisabled} className='solve' onClick={solveBFS}>Solve BFS</button>
 					</div>
 				) : (
 					''
