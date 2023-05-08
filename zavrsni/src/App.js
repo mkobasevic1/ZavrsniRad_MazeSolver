@@ -35,6 +35,7 @@ function Maze() {
 		setGenerated(true);
 		setVisited2([[false,false,false,false],[false,false,false,false],[false,false,false,false],[false,false,false,false]]);
 		setPath([[false,false,false,false],[false,false,false,false],[false,false,false,false],[false,false,false,false]]);
+		setFinished(false);
 		if (maze.length === 0) {
 			for (let i = 0; i < 4; i++) {
 				const row = [];
@@ -88,8 +89,6 @@ function Maze() {
 				while(end.visited==false || (end.row==start.row && end.column==start.column)){
 					end= maze[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)];
 				}
-				console.log("start ",start.row,start.column);
-				console.log("end ",end.row,end.column);
 				setStartRow(start.row);
 				setStartCol(start.column);
 				setEndRow(end.row);
@@ -146,7 +145,7 @@ function Maze() {
 		if (startRow < 3 && !visited2[startRow + 1][startCol] && visited[startRow+1][startCol] && maze[startRow][startCol].bottom==false) {
 			stack.push([startRow + 1, startCol]);
 		}
-		if (col < 3 && !visited2[row][col + 1] && visited[row][col+1] && maze[row][col].right==false) {
+		if (startCol < 3 && !visited2[startRow][startCol + 1] && visited[startRow][startCol+1] && maze[startRow][startCol].right==false) {
 			stack.push([startRow, startCol + 1]);
 		}
 
@@ -179,6 +178,7 @@ function Maze() {
 		}
 		
 	};
+
 	const solveDFS = async (row,col) =>{
 		setIsButtonDisabled(true);
 		setIsDisabled(true);
@@ -251,45 +251,21 @@ function Maze() {
 
 	return (
 		<div className='app'>
-			{/*<table>
-					<tr>
-						<td className="noright"></td>
-						<td className="noleft"></td>
-						<td></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td className="nobottom"></td>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td className="notop"></td>
-						<td className="noright"></td>
-						<td className="noright"></td>
-						<td></td>
-					</tr>
-					<tr>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td></td>
-					</tr>
-			</table>*/}
 			<div className='maze'>
 				<button disabled={isDisabled} className='generateBtn' onClick={generateMaze}>
 					Generate Maze
 				</button>
 				<table>
-					{maze.map((row, i) => (
-						<tr>
-							{row.map((cell, j) => (
-								<Cell key={i - j} row={i} column={j} visited={visited[i][j]} startRow={startRow} startCol={startCol} endRow={endRow} endCol={endCol} search={visited2[i][j]}
-									top={maze[i][j].top} bottom={maze[i][j].bottom} right={maze[i][j].right} left={maze[i][j].left} path={path[i][j]}/>
-							))}
-						</tr>
-					))}
+					<tbody>
+						{maze.map((row, i) => (
+							<tr key={i}>
+								{row.map((cell, j) => (
+									<Cell key={i - j} row={i} column={j} visited={visited[i][j]} startRow={startRow} startCol={startCol} endRow={endRow} endCol={endCol} search={visited2[i][j]}
+										top={maze[i][j].top} bottom={maze[i][j].bottom} right={maze[i][j].right} left={maze[i][j].left} path={path[i][j]}/>
+								))}
+							</tr>
+						))}
+					</tbody>
 				</table>
 				{generated ? (
 					<div className='buttons'>
