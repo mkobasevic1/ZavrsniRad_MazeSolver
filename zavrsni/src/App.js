@@ -25,9 +25,11 @@ function Maze() {
 	const [generated, setGenerated] = useState(false);
 	const [visited2,setVisited2]= useState([[false,false,false,false],[false,false,false,false],[false,false,false,false],[false,false,false,false]]);
 	const [path,setPath]= useState([[false,false,false,false],[false,false,false,false],[false,false,false,false],[false,false,false,false]]);
+	const [backpath,setBackpath]= useState([[false,false,false,false],[false,false,false,false],[false,false,false,false],[false,false,false,false]]);
 	var [finished,setFinished]= useState(false);
 	const [isDisabled,setIsDisabled] = useState(false);
 	const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+	const [g,setG] = useState(false);
 
 	// Create a new maze grid
 	const generateMaze = () => {
@@ -65,8 +67,14 @@ function Maze() {
 		}
 
 		// Start DFS algorithm to generate maze
-		const dfs = (row, col) => {
-			const neighbors = [];
+		const dfs = async(row, col) => {
+
+			visited[row][col]=true;
+			maze[row][col].visited = true;
+			setVisited([...visited]);
+			setMaze([...maze]);
+
+			var neighbors = [];
 			if (row > 0 && !visited[row - 1][col]) {
 				neighbors.push([row - 1, col]);
 			}
@@ -80,50 +88,64 @@ function Maze() {
 				neighbors.push([row, col + 1]);
 			}
 
+			
 			if(neighbors.length === 0){
-				var start = maze[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)];
-				var end = maze[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)];
-				while(start.visited==false){
-					start = maze[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)];
-				}
-				while(end.visited==false || (end.row==start.row && end.column==start.column)){
-					end= maze[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)];
-				}
-				setStartRow(start.row);
-				setStartCol(start.column);
-				setEndRow(end.row);
-				setEndCol(end.column);
 				return;
 			}
 
-			const [nextRow, nextCol] = neighbors[Math.floor(Math.random() * neighbors.length)];
-			visited[nextRow][nextCol] = true;
-			maze[nextRow][nextCol].visited = true;
-			if(nextRow<row){
-				maze[row][col].top=false;
-				maze[nextRow][nextCol].bottom=false;
+			
+
+			neighbors = neighbors.sort((a,b)=>{return 0.5 - Math.random()});
+
+			for(var i=0;i<neighbors.length;i++){
+				var [nextRow,nextCol] = neighbors[i];
+				console.log("row col, nexr, nexc i",row,col,nextRow,nextCol,i);
+				if(!visited[nextRow][nextCol]){
+					if(nextRow<row){
+						maze[row][col].top=false;
+						maze[nextRow][nextCol].bottom=false;
+					}
+					else if(nextRow>row){
+						maze[row][col].bottom=false;
+						maze[nextRow][nextCol].top=false;
+					}
+					else if(nextCol>col){
+						maze[row][col].right=false;
+						maze[nextRow][nextCol].left=false;
+					}
+					else if(nextCol<col){
+						maze[row][col].left=false;
+						maze[nextRow][nextCol].right=false;
+					}		
+					
+					await dfs(nextRow,nextCol);
+				}
+				
 			}
-			else if(nextRow>row){
-				maze[row][col].bottom=false;
-				maze[nextRow][nextCol].top=false;
+
+			if(row===0 && col===0 && visited[0][0]){
+					var start = maze[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)];
+					var end = maze[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)];
+					while(start.visited==false){
+						start = maze[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)];
+					}
+					while(end.visited==false || (end.row==start.row && end.column==start.column)){
+						end= maze[Math.floor(Math.random() * 4)][Math.floor(Math.random() * 4)];
+					}
+					setStartRow(start.row);
+					setStartCol(start.column);
+					setEndRow(end.row);
+					setEndCol(end.column);
+					setMaze([...maze]);
+					setVisited([...visited]);
+					return;
 			}
-			else if(nextCol>col){
-				maze[row][col].right=false;
-				maze[nextRow][nextCol].left=false;
-			}
-			else if(nextCol<col){
-				maze[row][col].left=false;
-				maze[nextRow][nextCol].right=false;
-			}
-			setVisited([...visited]);
-			dfs(nextRow, nextCol);
+			
+
 		};
 
 		const startRow = 0; 
 		const startCol = 0; 
-		visited[startRow][startCol] = true;
-		maze[startRow][startCol].visited = true;
-		setVisited([...visited]);
 		dfs(startRow, startCol);
 	};
 
@@ -157,12 +179,13 @@ function Maze() {
 			await new Promise(resolve => setTimeout(resolve, 1000));
 			if(row===endRow && col===endCol){
 				setPath([[false,false,false,false],[false,false,false,false],[false,false,false,false],[false,false,false,false]]);
+				setBackpath([[false,false,false,false],[false,false,false,false],[false,false,false,false],[false,false,false,false]]);
 				definePath(endRow,endCol);
 				
 				return;
 			}
 			if (row > 0 && !visited2[row - 1][col] && visited[row-1][col] && maze[row][col].top==false) {		
-			stack.push([row - 1, col]);
+				stack.push([row - 1, col]);
 			}
 			if (col > 0 && !visited2[row][col - 1] && visited[row][col-1] && maze[row][col].left==false) {
 				stack.push([row, col - 1]);
@@ -208,6 +231,7 @@ function Maze() {
 					finished=true;
 					setFinished(true);
 					setPath([[false,false,false,false],[false,false,false,false],[false,false,false,false],[false,false,false,false]]);
+					setBackpath([[false,false,false,false],[false,false,false,false],[false,false,false,false],[false,false,false,false]]);
 					definePath(endRow,endCol);
 			}
 			return;
@@ -234,16 +258,40 @@ function Maze() {
 			
 			return;
 		}
-			if (row > 0 && visited2[row - 1][col] && maze[row][col].top==false && !path[row-1][col]) {		
+			if (row > 0 && visited2[row - 1][col] && maze[row][col].top==false && !path[row-1][col] && !backpath[row-1][col] ){		
 				await definePath(row - 1, col);
 			}
-			else if (col > 0 && visited2[row][col - 1] && maze[row][col].left==false && !path[row][col - 1]) {
+			else if (col > 0 && visited2[row][col - 1] && maze[row][col].left==false && !path[row][col - 1] && !backpath[row][col-1]) {
 				await definePath(row, col - 1);
 			}
-			else if (row < 3 && visited2[row + 1][col] && maze[row][col].bottom==false && !path[row + 1][col]) {
+			else if (row < 3 && visited2[row + 1][col] && maze[row][col].bottom==false && !path[row + 1][col] && !backpath[row+1][col]) {
 				await definePath(row + 1, col);
 			}
-			else if (col < 3 && visited2[row][col + 1] && maze[row][col].right==false && !path[row][col + 1]) {
+			else if (col < 3 && visited2[row][col + 1] && maze[row][col].right==false && !path[row][col + 1] && !backpath[row][col+1]) {
+				await definePath(row, col + 1);
+			}
+			else if (row > 0 && visited2[row - 1][col] && maze[row][col].top==false && path[row-1][col]) {
+				path[row][col]=false;	
+				backpath[row][col]=true;
+				setBackpath([...backpath]);	
+				await definePath(row - 1, col);
+			}
+			else if (col > 0 && visited2[row][col - 1] && maze[row][col].left==false && path[row][col - 1]) {
+				path[row][col]=false;
+				backpath[row][col]=true;
+				setBackpath([...backpath]);
+				await definePath(row, col - 1);
+			}
+			else if (row < 3 && visited2[row + 1][col] && maze[row][col].bottom==false && path[row + 1][col]) {
+				path[row][col]=false;
+				backpath[row][col]=true;
+				setBackpath([...backpath]);
+				await definePath(row + 1, col);
+			}
+			else if (col < 3 && visited2[row][col + 1] && maze[row][col].right==false && path[row][col + 1]) {
+				path[row][col]=false;
+				backpath[row][col]=true;
+				setBackpath([...backpath]);
 				await definePath(row, col + 1);
 			}
 			return;
