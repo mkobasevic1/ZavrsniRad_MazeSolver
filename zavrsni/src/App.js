@@ -99,7 +99,7 @@ function Maze() {
 
 			for(var i=0;i<neighbors.length;i++){
 				var [nextRow,nextCol] = neighbors[i];
-				console.log("row col, nexr, nexc i",row,col,nextRow,nextCol,i);
+				
 				if(!visited[nextRow][nextCol]){
 					if(nextRow<row){
 						maze[row][col].top=false;
@@ -303,6 +303,14 @@ function Maze() {
 				<button disabled={isDisabled} className='generateBtn' onClick={generateMaze}>
 					Generate Maze
 				</button>
+				{generated?(
+					<div className="opis">
+						<p>Start: </p>
+						<div className="y"/>
+						<p>End: </p>
+						<div className="g"/>
+					</div>
+				):''}
 				<table>
 					<tbody>
 						{maze.map((row, i) => (
