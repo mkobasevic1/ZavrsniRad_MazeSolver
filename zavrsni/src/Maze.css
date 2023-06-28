@@ -29,7 +29,7 @@
 
 table {
 	border-collapse: collapse;
-	margin-top:10px;
+	margin-top:15px;
 }
 
 .row {
@@ -37,8 +37,8 @@ table {
 }
 
 .cell {
-	width: 50px;
-	height: 50px;
+	width: 60px;
+	height: 60px;
 	border-bottom: 2px solid #222;
 	border-right: 2px solid #222;
 	background-color: #fff;
@@ -49,16 +49,16 @@ table {
 
 
 .top {
-	width: 50px;
-	height: 50px;
+	width: 60px;
+	height: 60px;
 	border-bottom: 2px solid #222;
 	border-right: 2px solid #222;
 	border-top: 2px solid #222;
 }
 
 .left {
-	width: 50px;
-	height: 50px;
+	width: 60px;
+	height: 60px;
 	border-bottom: 2px solid #222;
 	border-right: 2px solid #222;
 	border-left: 2px solid #222;
@@ -137,8 +137,8 @@ table {
 
 td {
 	border: 1px solid black;
-	height: 50px;
-	width: 50px;
+	height: 60px;
+	width: 60px;
 }
 
 td.noright {
@@ -162,7 +162,7 @@ td.nobottom {
 	align-items: center;
 	justify-content: center;
 	border-radius: 5px;
-	background-color: rgba(0, 0, 0, 0.4);
+	background-color: rgba(0, 0, 0, 0.45);
 	width: 150px;
 	height: 30px;
 	margin-top: 15px;
